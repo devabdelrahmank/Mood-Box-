@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         scaffoldBackgroundColor: MyColors.primaryColor,
       ),
-      title: 'M O V I E S',
+      title: 'M o o d B o x',
       home: const LoginScreen(),
     );
   }
