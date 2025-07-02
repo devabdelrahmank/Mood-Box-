@@ -1,5 +1,6 @@
 class MyText {
   static const String mood = 'MOOD';
+  static const String name = 'Name';
   static const String box = 'BOX';
   static const String hiThere = 'Hi, There';
   static const String howAbout =

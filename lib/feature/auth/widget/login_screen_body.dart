@@ -51,16 +51,6 @@ class _LoginScreenBodyState extends State<LoginScreenBody> {
                   ),
                   vSpace(20),
                   const LoginPassAndEmail(),
-                  InkWell(
-                    onTap: () {},
-                    child: Text(
-                      MyText.forgotYourPass,
-                      style: MyStyles.title24White400.copyWith(
-                          fontSize: 12,
-                          decoration: TextDecoration.underline,
-                          decorationColor: Colors.white),
-                    ),
-                  ),
                   vSpace(10),
                   const LoginEnd()
                 ],

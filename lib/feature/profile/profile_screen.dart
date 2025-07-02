@@ -1,18 +1,41 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movie_proj/core/my_colors.dart';
+import 'package:movie_proj/core/shared/shared_pref.dart';
 import 'package:movie_proj/core/spacing.dart';
 import 'package:movie_proj/core/widget/movie_app_bar.dart';
+import 'package:movie_proj/feature/auth/manage/auth_cubit.dart';
 import 'package:movie_proj/feature/profile/widget/profile_header.dart';
 import 'package:movie_proj/feature/profile/widget/profile_menu.dart';
 import 'package:movie_proj/feature/profile/widget/profile_movies.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   final Function(int) onNavigate;
 
   const ProfileScreen({
     super.key,
     required this.onNavigate,
   });
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  void _loadUserData() async {
+    final authCubit = context.read<AuthCubit>();
+    final uIdUser = CacheHelper.getString(key: 'uIdUser0');
+
+    if (uIdUser != null && uIdUser.isNotEmpty && authCubit.userModel == null) {
+      await authCubit.getUserData(uIdUser);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +47,7 @@ class ProfileScreen extends StatelessWidget {
       backgroundColor: MyColors.primaryColor,
       appBar: MovieAppBar(
         currentIndex: 4,
-        onNavigate: onNavigate,
+        onNavigate: widget.onNavigate,
       ),
       body: SingleChildScrollView(
         child: Padding(

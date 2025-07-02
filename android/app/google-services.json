@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "509246975101",
+    "project_id": "mood-box",
+    "storage_bucket": "mood-box.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:509246975101:android:0601a514181d8e00ad9514",
+        "android_client_info": {
+          "package_name": "com.example.movie_proj"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCxtpqdJl7jBoCSFKlc_PCNudJaAhjTTiA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

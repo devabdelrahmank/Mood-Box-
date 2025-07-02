@@ -4,6 +4,8 @@ import 'package:movie_proj/core/my_images.dart';
 import 'package:movie_proj/core/my_styles.dart';
 import 'package:movie_proj/core/my_text.dart';
 import 'package:movie_proj/core/spacing.dart';
+import 'package:movie_proj/feature/details/details_screen.dart';
+import 'package:movie_proj/feature/details/model/movie_model.dart';
 
 class SuggestBody extends StatelessWidget {
   const SuggestBody({super.key});
@@ -77,8 +79,68 @@ class SuggestBody extends StatelessWidget {
           ),
           itemCount: recommendations.length,
           itemBuilder: (context, index) {
-            return _buildRecommendationCard(
-                recommendations[index], constraints.maxWidth);
+            return GestureDetector(
+              onTap: () {
+                // Create a sample movie data (replace with actual data in your app)
+                final movie = MovieModel(
+                  title: 'Dune: Part Two',
+                  posterUrl: 'assets/images/dune.png',
+                  year: '2024',
+                  duration: '2h 46m',
+                  rating: '8.5',
+                  genres: ['Adventure', 'Action', 'Drama'],
+                  plot:
+                      'Paul Atreides unites with Chani and the Fremen while seeking revenge against the conspirators who destroyed his family.',
+                  director: 'Denis Villeneuve',
+                  stars: 'Timothée Chalamet, Zendaya, Rebecca Ferguson',
+                  reviews:
+                      '1K User Reviews, 500 Critic Reviews, 92% Metacritic',
+                  photos: [
+                    'assets/images/Group 9.png',
+                    'assets/images/image 15.png',
+                    'assets/images/image 16.png',
+                    'assets/images/Group 10.png',
+                  ],
+                  cast: [
+                    CastMember(
+                      name: 'Zendaya',
+                      role: 'Chani',
+                      imageUrl: 'assets/images/image 18(1).png',
+                    ),
+                    CastMember(
+                      name: 'Timothée Chalamet',
+                      role: 'Paul Atreides',
+                      imageUrl: 'assets/images/image 18(2).png',
+                    ),
+                    CastMember(
+                      name: 'Zendaya',
+                      role: 'Chani',
+                      imageUrl: 'assets/images/image 18(3).png',
+                    ),
+                    CastMember(
+                      name: 'Timothée Chalamet',
+                      role: 'Paul Atreides',
+                      imageUrl: 'assets/images/image 18(4).png',
+                    ),
+                    CastMember(
+                      name: 'Zendaya',
+                      role: 'Chani',
+                      imageUrl: 'assets/images/image 18.png',
+                    ),
+                    // Add more cast members as needed
+                  ],
+                );
+
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => DetailsScreen(movie: movie),
+                  ),
+                );
+              },
+              child: _buildRecommendationCard(
+                  recommendations[index], constraints.maxWidth),
+            );
           },
         );
       },

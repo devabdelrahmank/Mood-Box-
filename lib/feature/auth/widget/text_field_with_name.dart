@@ -41,7 +41,7 @@ class TextFieldWithName extends StatelessWidget {
           obscureText: obscureText,
           suffix: suffixWidget,
         ),
-        vSpace(20),
+        vSpace(15),
       ],
     );
   }
