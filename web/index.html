@@ -19,18 +19,18 @@
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="A new Flutter project.">
+  <meta name="description" content="Mood Box - Movie Discovery App. Discover movies, TV shows, and connect with friends.">
 
   <!-- iOS meta tags & icons -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="movie_proj">
+  <meta name="apple-mobile-web-app-title" content="Mood Box">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png" />
 
-  <title>movie_proj</title>
+  <title>Mood Box - Movie Discovery App</title>
   <link rel="manifest" href="manifest.json">
 
   <!-- Firebase SDK -->
@@ -38,25 +38,81 @@
   <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js"></script>
 
-  <script>
-    // Your web app's Firebase configuration
-    const firebaseConfig = {
-      // Add your Firebase config here from the Firebase Console
-      apiKey: "your-api-key",
-      authDomain: "your-auth-domain",
-      projectId: "your-project-id",
-      storageBucket: "your-storage-bucket",
-      messagingSenderId: "your-messaging-sender-id",
-      appId: "your-app-id"
-    };
+  <!-- Loading styles -->
+  <style>
+    .loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+      color: white;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
 
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-  </script>
+    .loading-logo {
+      font-size: 3rem;
+      margin-bottom: 2rem;
+      animation: pulse 2s infinite;
+    }
+
+    .loading-text {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+      opacity: 0.8;
+    }
+
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-top: 3px solid #ff4444;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+
 </head>
 
 <body>
-  <script src="flutter_bootstrap.js" async></script>
+  <!-- Loading screen -->
+  <div id="loading" class="loading">
+    <div class="loading-logo">🎬</div>
+    <div class="loading-text">Mood Box</div>
+    <div class="loading-text">Loading your movie experience...</div>
+    <div class="loading-spinner"></div>
+  </div>
+
+  <!-- Flutter Web Bootstrap -->
+  <script>
+    window.addEventListener('load', function(ev) {
+      // Download main.dart.js
+      _flutter.loader.loadEntrypoint({
+        serviceWorker: {
+          serviceWorkerVersion: serviceWorkerVersion,
+        },
+        onEntrypointLoaded: function(engineInitializer) {
+          engineInitializer.initializeEngine().then(function(appRunner) {
+            // Hide loading screen
+            document.getElementById('loading').style.display = 'none';
+            appRunner.runApp();
+          });
+        }
+      });
+    });
+  </script>
+  <script src="flutter.js" defer></script>
 </body>
 
 </html>
