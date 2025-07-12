@@ -1,1 +1,49 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"mood-box","appId":"1:509246975101:android:0601a514181d8e00ad9514","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"mood-box","configurations":{"android":"1:509246975101:android:0601a514181d8e00ad9514","ios":"1:509246975101:ios:9755d88138c8e9b0ad9514","web":"1:509246975101:web:e613c33cd47583fdad9514","windows":"1:509246975101:web:af027587d3422287ad9514"}}}}}}
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "mood-box",
+          "appId": "1:509246975101:android:0601a514181d8e00ad9514",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "mood-box",
+          "configurations": {
+            "android": "1:509246975101:android:0601a514181d8e00ad9514",
+            "ios": "1:509246975101:ios:9755d88138c8e9b0ad9514",
+            "web": "1:509246975101:web:e613c33cd47583fdad9514",
+            "windows": "1:509246975101:web:af027587d3422287ad9514"
+          }
+        }
+      }
+    }
+  },
+  "hosting": {
+    "public": "build/web",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ],
+    "headers": [
+      {
+        "source": "**/*.@(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "max-age=31536000"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -41,3 +41,36 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Environment variables
+.env
+.env.local
+.env.production
+
+# API Keys (security)
+**/api_keys.dart
+**/secrets.dart
+
+# Firebase
+.firebase/
+firebase-debug.log
+firebase-debug.*.log
+
+# Deployment
+build/
+dist/
+.firebase/
+
+# IDE
+.vscode/settings.json
+.vscode/launch.json
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
