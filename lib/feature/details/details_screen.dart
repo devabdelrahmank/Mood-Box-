@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:movie_proj/core/my_colors.dart';
-import 'package:movie_proj/feature/details/model/movie_model.dart';
-import 'package:movie_proj/feature/details/widget/details_body.dart';
+import 'package:movie_proj/feature/details/widget/modern_details_body.dart';
+import 'package:movie_proj/feature/home/model/movie_model.dart';
 
 class DetailsScreen extends StatelessWidget {
   final MovieModel movie;
@@ -15,7 +15,7 @@ class DetailsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: MyColors.primaryColor,
-      body: DetailsBody(movie: movie),
+      body: ModernDetailsBody(movie: movie),
     );
   }
 }

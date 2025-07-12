@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:movie_proj/core/my_text.dart';
 import 'package:movie_proj/core/spacing.dart';
+import 'package:movie_proj/feature/user_lists/service/user_lists_service.dart';
+import 'package:movie_proj/feature/user_lists/model/saved_movie_model.dart';
+import 'package:movie_proj/feature/myFriends/service/friends_service.dart';
 
 class ProfileMenu extends StatefulWidget {
   const ProfileMenu({super.key});
@@ -11,13 +14,301 @@ class ProfileMenu extends StatefulWidget {
 
 class _ProfileMenuState extends State<ProfileMenu> {
   int selectedIndex = 0;
-  final List<Map<String, dynamic>> tabs = [
-    {'title': MyText.all, 'count': 3448},
-    {'title': MyText.tvShows, 'count': 28},
-    {'title': MyText.movies, 'count': 250},
-    {'title': MyText.watchList, 'count': 120},
-    {'title': MyText.likes, 'count': 3050},
+  List<Map<String, dynamic>> tabs = [
+    {'title': MyText.all, 'count': 0},
+    {'title': MyText.tvShows, 'count': 0},
+    {'title': MyText.movies, 'count': 0},
+    {'title': 'watch later', 'count': 0},
+    {'title': 'My Friends', 'count': 0},
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserCounts();
+  }
+
+  Future<void> _loadUserCounts() async {
+    try {
+      // Load both favorites and watch later lists
+      final favorites = await UserListsService.getFavorites();
+      final watchLater = await UserListsService.getWatchLater();
+
+      // Load friends list
+      final friends = await FriendsService.getFriends();
+
+      // Combine both lists for total count
+      final allMovies = <SavedMovieModel>[];
+      allMovies.addAll(favorites);
+      allMovies.addAll(watchLater);
+
+      // Remove duplicates based on movieId
+      final uniqueMovies = <String, SavedMovieModel>{};
+      for (final movie in allMovies) {
+        uniqueMovies[movie.movieId] = movie;
+      }
+      final totalCollection = uniqueMovies.values.toList();
+
+      // Count movies and TV shows based on genre analysis
+      int movieCount = 0;
+      int tvShowCount = 0;
+
+      for (final movie in totalCollection) {
+        if (_isLikelyTVShow(movie)) {
+          tvShowCount++;
+          // Debug: uncomment to see what's classified as TV
+          // print('TV Show: ${movie.title}');
+        } else {
+          movieCount++;
+          // Debug: uncomment to see what's classified as Movie
+          // print('Movie: ${movie.title}');
+        }
+      }
+
+      if (mounted) {
+        setState(() {
+          tabs = [
+            {'title': "All Movies", 'count': totalCollection.length},
+            {'title': 'Favorite', 'count': favorites.length},
+            {'title': 'watch later', 'count': watchLater.length},
+            {'title': 'My Friends', 'count': friends.length},
+          ];
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        // Handle error silently - keep existing counts
+      }
+    }
+  }
+
+  // Helper method to determine if a saved movie is likely a TV show
+  bool _isLikelyTVShow(SavedMovieModel movie) {
+    final title = movie.title.toLowerCase().trim();
+    final originalTitle = movie.originalTitle.toLowerCase().trim();
+
+    // Known TV shows (manual override for common shows)
+    final knownTVShows = [
+      'stranger things',
+      'breaking bad',
+      'game of thrones',
+      'the office',
+      'friends',
+      'the walking dead',
+      'house of cards',
+      'narcos',
+      'orange is the new black',
+      'black mirror',
+      'sherlock',
+      'the crown',
+      'westworld',
+      'better call saul',
+      'the mandalorian',
+      'the witcher',
+      'squid game',
+      'money heist',
+      'dark',
+      'ozark',
+      'the boys',
+      'euphoria',
+      'succession',
+      'ted lasso',
+      'bridgerton',
+      'the umbrella academy',
+      'cobra kai',
+      'lucifer',
+      'vikings',
+      'peaky blinders',
+      'the handmaids tale',
+      'mindhunter',
+      'the good place',
+      'atlanta',
+      'fargo',
+      'true detective',
+      'homeland',
+      'dexter',
+      'lost',
+      'prison break',
+      'how i met your mother',
+      'the big bang theory',
+      'modern family',
+      'parks and recreation',
+      'arrested development',
+      'community',
+      'scrubs',
+      'the sopranos',
+      'the wire',
+      'mad men',
+      'boardwalk empire',
+      'house',
+      'greys anatomy',
+      'supernatural',
+      'arrow',
+      'the flash',
+      'gotham',
+      'daredevil',
+      'jessica jones',
+      'luke cage',
+      'iron fist',
+      'the defenders',
+      'the punisher',
+      'agents of shield',
+      'legion',
+      'the gifted',
+      'american horror story',
+      'the vampire diaries',
+      'the originals',
+      'teen wolf',
+      'pretty little liars',
+      'gossip girl',
+      'one tree hill',
+      'gilmore girls',
+      'dawsons creek',
+      'buffy the vampire slayer',
+      'angel',
+      'charmed',
+      'smallville',
+      'supernatural',
+      'doctor who',
+      'torchwood',
+      'sherlock',
+      'downton abbey',
+      'outlander',
+      'the walking dead',
+      'fear the walking dead',
+      'better call saul',
+      'el camino',
+      'breaking bad',
+      'ozark',
+      'narcos',
+      'narcos mexico',
+      'mindhunter',
+      'house of cards',
+      'orange is the new black',
+      'stranger things',
+      'dark',
+      'money heist',
+      'la casa de papel',
+      'elite',
+      'sex education',
+      'the witcher',
+      'the umbrella academy',
+      'locke and key',
+      'cursed',
+      'the queens gambit',
+      'bridgerton',
+      'lupin',
+      'emily in paris',
+      'the crown',
+      'the mandalorian',
+      'wandavision',
+      'the falcon and the winter soldier',
+      'loki',
+      'hawkeye',
+      'moon knight',
+      'she hulk',
+      'ms marvel',
+      'what if',
+      'the boys',
+      'invincible',
+      'the walking dead',
+      'fear the walking dead',
+      'world beyond',
+      'tales of the walking dead',
+      'the last of us',
+      'house of the dragon',
+      'rings of power',
+      'the bear',
+      'abbott elementary',
+      'wednesday',
+      'dahmer',
+      'monster',
+      'the watcher',
+      'the midnight club',
+      'the sandman',
+      'heartstopper',
+      'young royals',
+      'elite',
+    ];
+
+    // Check if it's a known TV show
+    for (final tvShow in knownTVShows) {
+      if (title.contains(tvShow) || originalTitle.contains(tvShow)) {
+        return true;
+      }
+    }
+
+    // Strong TV show indicators in title
+    final strongTVIndicators = [
+      'season',
+      'episode',
+      'series',
+      'tv show',
+      'show',
+      'miniseries',
+      'limited series',
+      'anthology',
+      ': season',
+      ': series',
+      ': episode',
+      'season 1',
+      'season 2',
+      'season 3',
+      'season 4',
+      'season 5',
+      's01',
+      's02',
+      's03',
+      's04',
+      's05',
+      'episode 1',
+      'episode 2',
+      'ep 1',
+      'ep 2',
+      'part i',
+      'part ii',
+      'part iii',
+      'chapter 1',
+      'chapter 2',
+      'volume 1',
+      'volume 2',
+    ];
+
+    for (final indicator in strongTVIndicators) {
+      if (title.contains(indicator) || originalTitle.contains(indicator)) {
+        return true;
+      }
+    }
+
+    // Check for TV-specific genre IDs
+    for (final genreId in movie.genreIds) {
+      if (tvGenreIds.contains(genreId)) {
+        return true;
+      }
+    }
+
+    return false; // Default to movie if uncertain
+  }
+
+  // TV Show genre IDs (based on TMDB)
+  static const Set<int> tvGenreIds = {
+    10759, // Action & Adventure
+    16, // Animation (can be TV)
+    35, // Comedy (can be TV)
+    80, // Crime (can be TV)
+    99, // Documentary (can be TV)
+    18, // Drama (can be TV)
+    10751, // Family (can be TV)
+    10762, // Kids
+    9648, // Mystery (can be TV)
+    10763, // News
+    10764, // Reality
+    10765, // Sci-Fi & Fantasy
+    10766, // Soap
+    10767, // Talk
+    10768, // War & Politics
+    37, // Western (can be TV)
+  };
 
   @override
   Widget build(BuildContext context) {

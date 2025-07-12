@@ -7,6 +7,7 @@ import 'package:movie_proj/core/shared/shared_pref.dart';
 import 'package:movie_proj/core/widget/message_snakbar.dart';
 import 'package:movie_proj/feature/auth/manage/auth_state.dart';
 import 'package:movie_proj/feature/auth/model/user_model.dart';
+import 'package:movie_proj/feature/user_lists/service/user_lists_service.dart';
 
 class AuthCubit extends Cubit<AuthStates> {
   AuthCubit() : super(SignUpInitialStates()) {
@@ -61,10 +62,7 @@ class AuthCubit extends Cubit<AuthStates> {
 
   // Avatar lists
   final List<String> boyAvatars = [
-    'assets/images/avatar1.png',
-    'assets/images/avatar3.png',
     'assets/images/avatar5.png',
-    'assets/images/avatar7.png',
     'assets/images/avatar9.png',
   ];
 
@@ -72,7 +70,10 @@ class AuthCubit extends Cubit<AuthStates> {
     'assets/images/avatar2.png',
     'assets/images/avatar4.png',
     'assets/images/avatar6.png',
+    'assets/images/avatar1.png',
+    'assets/images/avatar3.png',
     'assets/images/avatar8.png',
+    'assets/images/avatar7.png',
   ];
 
   changePasswordVisibility() {
@@ -216,17 +217,25 @@ class AuthCubit extends Cubit<AuthStates> {
     }
   }
 
-  // Background email verification (non-blocking)
-  void _sendEmailVerificationInBackground(User user, String email) {
-    user.sendEmailVerification().then((_) {
+  // Enhanced email verification with better error handling
+  void _sendEmailVerificationInBackground(User user, String email) async {
+    try {
+      // Send email verification using Firebase default settings
+      // This avoids domain authorization issues
+      await user.sendEmailVerification();
+
       if (kDebugMode) {
-        debugPrint('Email verification sent successfully to: $email');
+        debugPrint('✅ Email verification sent successfully to: $email');
+        debugPrint('📧 Check your inbox and spam folder');
+        debugPrint('🔗 Verification link expires in 1 hour');
       }
-    }).catchError((e) {
+    } catch (e) {
       if (kDebugMode) {
-        debugPrint('Error sending email verification: $e');
+        debugPrint('❌ Error sending email verification: $e');
+        debugPrint('🔄 Will retry verification on next login');
       }
-    });
+      // Don't throw error to avoid blocking signup process
+    }
   }
 
   // Extract error message logic
@@ -257,10 +266,14 @@ class AuthCubit extends Cubit<AuthStates> {
         'image': image,
         'isVerified': false,
         'createdAt': FieldValue.serverTimestamp(),
+        // Initialize user lists
+        'favorites': [],
+        'watchLater': [],
+        'listsCreatedAt': FieldValue.serverTimestamp(),
       });
 
       if (kDebugMode) {
-        debugPrint('User document created successfully for: $uId');
+        debugPrint('User document created successfully with lists for: $uId');
       }
     } catch (e) {
       if (kDebugMode) {
@@ -316,53 +329,108 @@ class AuthCubit extends Cubit<AuthStates> {
     try {
       User? user = FirebaseAuth.instance.currentUser;
       if (user != null && !user.emailVerified) {
+        // Send email verification using Firebase default settings
         await user.sendEmailVerification();
 
         if (kDebugMode) {
           debugPrint(
-              'Email verification resent successfully to: ${user.email}');
+              '✅ Email verification resent successfully to: ${user.email}');
+          debugPrint('📧 Please check your inbox AND spam folder');
+          debugPrint('⏰ Link expires in 1 hour');
         }
 
-        // Show success message
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Verification email sent! Please check your inbox.'),
-            backgroundColor: Colors.green,
-            duration: Duration(seconds: 3),
-          ),
-        );
+        // Show enhanced success message
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    '📧 Verification email sent!',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 4),
+                  Text('Sent to: ${user.email}'),
+                  const SizedBox(height: 4),
+                  const Text(
+                    '⚠️ Check your spam folder if not found',
+                    style: TextStyle(fontSize: 12),
+                  ),
+                ],
+              ),
+              backgroundColor: Colors.green,
+              duration: const Duration(seconds: 5),
+              action: SnackBarAction(
+                label: 'OK',
+                textColor: Colors.white,
+                onPressed: () {},
+              ),
+            ),
+          );
+        }
       } else if (user != null && user.emailVerified) {
         // User is already verified
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Your email is already verified!'),
-            backgroundColor: Colors.blue,
-            duration: Duration(seconds: 2),
-          ),
-        );
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('✅ Your email is already verified!'),
+              backgroundColor: Colors.blue,
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
       } else {
         // No user logged in
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Please log in first to resend verification email.'),
-            backgroundColor: Colors.orange,
-            duration: Duration(seconds: 3),
-          ),
-        );
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content:
+                  Text('⚠️ Please log in first to resend verification email.'),
+              backgroundColor: Colors.orange,
+              duration: Duration(seconds: 3),
+            ),
+          );
+        }
       }
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('Error sending email verification: $e');
+        debugPrint('❌ Error sending email verification: $e');
+        debugPrint('🔍 Error type: ${e.runtimeType}');
       }
 
-      // Show error message
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Failed to send verification email: ${e.toString()}'),
-          backgroundColor: Colors.red,
-          duration: const Duration(seconds: 4),
-        ),
-      );
+      // Show enhanced error message
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  '❌ Failed to send verification email',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 4),
+                Text('Error: ${e.toString()}'),
+                const SizedBox(height: 4),
+                const Text(
+                  '💡 Try again in a few minutes',
+                  style: TextStyle(fontSize: 12),
+                ),
+              ],
+            ),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 6),
+            action: SnackBarAction(
+              label: 'Retry',
+              textColor: Colors.white,
+              onPressed: () => sendEmailVerification(context),
+            ),
+          ),
+        );
+      }
     }
   }
 
@@ -505,26 +573,6 @@ class AuthCubit extends Cubit<AuthStates> {
     }
   }
 
-  // Extract login error message logic
-  String _getLoginErrorMessage(String errorCode) {
-    switch (errorCode) {
-      case 'user-not-found':
-        return 'No user found with this email';
-      case 'wrong-password':
-        return 'Incorrect password';
-      case 'invalid-email':
-        return 'Invalid email format';
-      case 'user-disabled':
-        return 'This account has been disabled';
-      case 'too-many-requests':
-        return 'Too many failed attempts. Please try again later';
-      case 'network-request-failed':
-        return 'Network error occurred';
-      default:
-        return 'Login failed. Please try again.';
-    }
-  }
-
   Future<void> checkLoginStatus() async {
     try {
       final uIdUser = CacheHelper.getString(key: 'uIdUser0');
@@ -573,7 +621,7 @@ class AuthCubit extends Cubit<AuthStates> {
 
       // 4. تحديث الحالة في Cubit
       if (authCubit.userModel != null) {
-        authCubit.userModel!.name = newName;
+        authCubit.userModel = authCubit.userModel!.copyWith(name: newName);
       }
       // 5. إعادة جلب البيانات المحدثة
 

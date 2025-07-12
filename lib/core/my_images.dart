@@ -14,4 +14,8 @@ class MyImages {
   static const String profilePic = 'assets/images/profile.png';
   static const String myFriends = 'assets/images/avatar5.png';
   static const String angryMen = 'assets/images/12AngryMan.png';
+  static const String loki = 'assets/images/loki.png';
+  static const String genV = 'assets/images/genV.png';
+  static const String fallMouseUsher = 'assets/images/fallMouseUsher.png';
+  //static const String angryMen = 'assets/images/12AngryMan.png';
 }

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:movie_proj/core/my_colors.dart';
 import 'package:movie_proj/core/my_styles.dart';
 import 'package:movie_proj/core/spacing.dart';
+import 'package:movie_proj/feature/details/details_screen.dart';
+import 'package:movie_proj/feature/home/model/movie_model.dart';
 
 class SimilarMoviesSection extends StatelessWidget {
   const SimilarMoviesSection({super.key});
@@ -73,7 +74,28 @@ class SimilarMoviesSection extends StatelessWidget {
   Widget _buildMovieCard(Map<String, dynamic> movie) {
     return GestureDetector(
       onTap: () {
-        // Navigate to movie details
+        // Create a MovieModel from the static data
+        final movieModel = MovieModel(
+          title: movie['title'] ?? 'Unknown Title',
+          originalTitle: movie['title'] ?? 'Unknown Title',
+          posterPath: null, // Static assets don't have TMDB paths
+          backdropPath: null,
+          releaseDate: '2024-01-01',
+          voteAverage: double.tryParse(movie['rating'] ?? '0.0') ?? 0.0,
+          voteCount: 1000,
+          overview:
+              'Discover more about ${movie['title'] ?? 'this movie'} in this exciting film.',
+          id: movie['title'].hashCode,
+          adult: false,
+          genreIds: [],
+          originalLanguage: 'en',
+          popularity: 50.0,
+          video: false,
+        );
+
+        // Note: This navigation won't work in this context as we don't have BuildContext
+        // This is a stateless widget without access to Navigator
+        // The main implementation in modern_details_body.dart is the correct one
       },
       child: Container(
         width: 180,

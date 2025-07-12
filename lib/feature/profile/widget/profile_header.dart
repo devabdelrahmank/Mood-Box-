@@ -85,20 +85,6 @@ class ProfileHeader extends StatelessWidget {
                                   overflow: TextOverflow.ellipsis,
                                 ),
                                 vSpace(spacing),
-                                Wrap(
-                                  spacing: spacing,
-                                  runSpacing: spacing / 2,
-                                  children: [
-                                    _buildStat(MyText.friends, '54', fontSize),
-                                    _buildStat(MyText.watched, '187', fontSize),
-                                    if (!isSmallScreen) ...[
-                                      _buildStat(
-                                          MyText.following, '26', fontSize),
-                                      _buildStat(
-                                          MyText.followers, '56', fontSize),
-                                    ],
-                                  ],
-                                ),
                                 if (isSmallScreen) ...[
                                   vSpace(spacing / 2),
                                   Wrap(

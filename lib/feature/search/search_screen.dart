@@ -27,6 +27,13 @@ class SearchScreen extends StatelessWidget {
             ],
           ),
         ),
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: const Icon(
+            Icons.arrow_back_ios_new_rounded,
+            color: Colors.white,
+          ),
+        ),
       ),
       body: const SearchScreenBody(),
     );

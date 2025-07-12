@@ -240,4 +240,19 @@ class MyText {
   static const String blockZilan = 'Block Zilan';
   static const String reportZilan = 'Report Zilan';
   static const String deleteChat = 'Delete chat';
+  static const String chat = 'Chat';
+  static const String accept = 'Accept';
+  static const String reject = 'Reject';
+  static const String friendRequest = 'Friend Request';
+  static const String friendRequests = 'Friend Requests';
+  static const String wantsToBeYourFriend = 'wants to be your friend';
+  static const String friendRequestSent = 'Friend request sent!';
+  static const String friendRequestAccepted = 'Friend request accepted!';
+  static const String friendRequestRejected = 'Friend request rejected!';
+  static const String noFriendRequests = 'No friend requests';
+  static const String noUsersAvailable = 'No users available to add';
+  static const String noFriendsYet = 'No friends yet';
+  static const String friendsSince = 'Friends since';
+  static const String pending = 'Waiting';
+  static const String sendAgain = 'Send Again';
 }

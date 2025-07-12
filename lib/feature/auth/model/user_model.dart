@@ -1,31 +1,45 @@
 class UserModel {
-  String? name;
-  String? email;
-  String? image;
-  String? uId;
-  bool? isVerified;
+  final String? uId;
+  final String? email;
+  final String? name;
+  final String? image;
 
   UserModel({
-    this.name,
-    this.email,
-    this.image,
     this.uId,
-    this.isVerified,
+    this.email,
+    this.name,
+    this.image,
   });
-  UserModel.fromJson(Map<String, dynamic> json) {
-    name = json['name'] as String?;
-    email = json['email'] as String?;
-    uId = json['uId'] as String?;
-    image = json['image'] as String?;
-    isVerified = json['isVerified'] as bool?;
+
+  factory UserModel.fromJson(Map<String, dynamic> json) {
+    return UserModel(
+      uId: json['uId'],
+      email: json['email'],
+      name: json['name'],
+      image: json['image'],
+    );
   }
-  Map<String, dynamic>? toMap() {
+
+  Map<String, dynamic> toJson() {
     return {
-      'name': name,
-      'email': email,
       'uId': uId,
+      'email': email,
+      'name': name,
       'image': image,
-      'isVerified': isVerified,
     };
+  }
+
+  UserModel copyWith({
+    String? uId,
+    String? email,
+    String? name,
+    String? image,
+  }) {
+    return UserModel(
+      uId: uId ?? this.uId,
+      email: email ?? this.email,
+      name: name ?? this.name,
+      image: image ?? this.image,
+    );
   }
 }
